@@ -14,10 +14,12 @@ def run(dragen_file=None, dnd1_file=None, dnd2_file=None, rts_file=None):
         rts_lookup = rts.parse(rts_file)
     if dragen_file is not None:
         dragen_data = dragen.parse(dragen_file, rts_lookup)
+    if dnd1_file is not None:
+        dnd1_data = dnd.parse_dnd1(dnd1_file)
     if dnd2_file is not None:
         dnd2_data = dnd.parse_dnd2(dnd2_file)
 
-    plot.plot(dragen_data, dnd2_data)
+    plot.plot(dragen_data, dnd1_data)
 
 if __name__ == "__main__":
     main()

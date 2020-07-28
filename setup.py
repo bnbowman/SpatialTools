@@ -23,5 +23,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
-    entry_points={"console_scripts": ["spatial_analysis=spatial_analysis:main",]},
+    entry_points={"console_scripts": ["spatial_tools=spatial_tools.main:main",]},
 )
