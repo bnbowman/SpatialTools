@@ -4,6 +4,7 @@ from collections import defaultdict
 
 import statsmodels.api as sm
 import numpy as np
+import scipy.stats as sp
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -61,11 +62,14 @@ class RtsAnalyzer(object):
 
     def calculate_threshold(self, ids, counts):
         ctrls = [id for id in ids if self.rts.is_control(id)]
-        counts = [counts[id] for id in ctrls if id in counts]
-        if len(counts) == 0:
+        counts = [max(1, counts[id]) for id in ctrls if id in counts]
+        print(len(ctrls), ctrls)
+        print(len(counts), counts)
+        if len(counts) <= 1:
             return 0.0
-        mean = np.mean(counts)
-        std = np.std(counts)
+        mean = sp.gmean(counts)
+        std = sp.gstd(counts)
+        print(mean, std, mean * (std**2))
         return mean * (std**2)
 
     def counts_by_gene(self, probes_by_gene, counts):
@@ -84,8 +88,6 @@ class RtsAnalyzer(object):
                 probe_counts[gene] += 1
                 probe_totals[gene] += count
 
-        #print(probe_counts)
-        #print(probe_totals)
         avgs = dict()
         for gene, count in probe_counts.items():
             if count > 0:
@@ -112,9 +114,9 @@ class RtsAnalyzer(object):
             handle.write("Metric,DRAGEN,DNDv2\n")
             handle.write("Threshold,{},{}\n".format(thresh1, thresh2))
             handle.write("Genes,{},{}\n".format(len(genes1), len(genes2)))
-            handle.write("FractionGenes,{}\n".format(frac_diff))
-            handle.write("Shared,{}\n".format(len(shared)))
-            handle.write("FractionShared,{}\n".format(frac_shared))
+            handle.write("FractionGenesDiff,{}\n".format(frac_diff))
+            handle.write("GenesShared,{}\n".format(len(shared)))
+            handle.write("FractionGenesShared,{}\n".format(frac_shared))
 
     def run(self, d1, d2):
         # First we sort and write the raw results
