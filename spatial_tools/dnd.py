@@ -1,11 +1,9 @@
 
-from collections import defaultdict
-
 SUMMARY_START = "<Code_Summary>"
 SUMMARY_END = "</Code_Summary>"
 
 def parse_dnd1(fn):
-    data = defaultdict(int)
+    data = dict()
     in_summary = False
     with open(fn) as handle:
         for line in handle:
@@ -17,14 +15,14 @@ def parse_dnd1(fn):
                 in_summary = False
                 continue
             if in_summary:
-                parts = line.strip().split()
+                parts = line.strip().split(',')
                 assert len(parts) == 2
                 rts, count = parts
                 data[rts] = int(count)
     return data
 
 def parse_dnd2(fn):
-    data = defaultdict(int)
+    data = dict()
     with open(fn) as handle:
         for line in handle:
             parts = line.strip().split()

@@ -1,3 +1,4 @@
+import os
 import os.path as op
 import argparse
 
@@ -20,6 +21,13 @@ def get_parser():
         help="File of DRAGEN Spatial Analysis results",
     )
     parser.add_argument(
+        "-j",
+        "--jbruand_output",
+        required=False,
+        default=None,
+        help="File of Jocelyne's manual Spatial Analysis results",
+    )
+    parser.add_argument(
         "-1",
         "--dnd1_output",
         required=False,
@@ -36,8 +44,22 @@ def get_parser():
     parser.add_argument(
         "-r",
         "--rts_file",
-        required=False,
+        required=True,
         default=None,
         help="Reference file for RTS sequence lookup",
+    )
+    parser.add_argument(
+        "-p",
+        "--control_prefix",
+        required=False,
+        default="ERCC_",
+        help="Reference file for RTS sequence lookup",
+    )
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        required=False,
+        default=os.getcwd(),
+        help="Output directory",
     )
     return parser
