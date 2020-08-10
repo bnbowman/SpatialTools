@@ -13,9 +13,10 @@ matplotlib.use("Agg")
 class RtsAnalyzer(object):
     PRECISION = 4
 
-    def __init__(self, output, rts):
+    def __init__(self, output, rts, quant_limit):
         self.output = output
         self.rts = rts
+        self.quant_limit = quant_limit
 
     @classmethod
     def sort(self, d1, d2):
@@ -63,14 +64,17 @@ class RtsAnalyzer(object):
     def calculate_threshold(self, ids, counts):
         ctrls = [id for id in ids if self.rts.is_control(id)]
         counts = [max(1, counts[id]) for id in ctrls if id in counts]
-        print(len(ctrls), ctrls)
-        print(len(counts), counts)
+        #print(len(ctrls), ctrls)
+        #print(len(counts), counts)
         if len(counts) <= 1:
             return 0.0
         mean = sp.gmean(counts)
         std = sp.gstd(counts)
-        print(mean, std, mean * (std**2))
-        return mean * (std**2)
+        #print(mean, std, mean * (std**2))
+        threshold = mean * (std**2)
+        if self.quant_limit is not None and self.quant_limit > 0.0:
+            return max(threshold, self.quant_limit)
+        return threshold
 
     def counts_by_gene(self, probes_by_gene, counts):
         probe_counts = defaultdict(float)

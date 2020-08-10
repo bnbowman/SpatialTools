@@ -56,6 +56,13 @@ def get_parser():
         help="Reference file for RTS sequence lookup",
     )
     parser.add_argument(
+        "-l",
+        "--limit_of_quantitation",
+        required=False,
+        default=5.0,
+        help="Minimum UMI count for RTS barcode detection (Set < 0 to disable)",
+    )
+    parser.add_argument(
         "-o",
         "--output_dir",
         required=False,
