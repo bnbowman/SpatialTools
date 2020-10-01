@@ -60,6 +60,7 @@ def get_parser():
         "--limit_of_quantitation",
         required=False,
         default=5.0,
+        type=float,
         help="Minimum UMI count for RTS barcode detection (Set < 0 to disable)",
     )
     parser.add_argument(
