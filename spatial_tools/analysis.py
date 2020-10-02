@@ -14,7 +14,7 @@ matplotlib.use("Agg")
 
 class RtsAnalyzer(object):
     PRECISION = 4
-    ALPHA = 0.05
+    ALPHA = 0.01
 
     def __init__(self, output, rts, quant_limit):
         self.output = output
@@ -76,7 +76,8 @@ class RtsAnalyzer(object):
         #threshold = mean * (std**2)
         #print(mean, std, threshold)
 
-        counts = grubbs.test(counts, alpha=self.ALPHA)
+        if max(counts) >= 10:
+            counts = grubbs.test(counts, alpha=self.ALPHA)
 
         #print("POST: {}".format(list(counts)))
         mean = sp.gmean(counts)
