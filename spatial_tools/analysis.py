@@ -2,6 +2,8 @@
 import os
 from collections import defaultdict
 
+from spatial_tools.outliers import smirnov_grubbs as grubbs
+
 import statsmodels.api as sm
 import numpy as np
 import scipy.stats as sp
@@ -12,6 +14,7 @@ matplotlib.use("Agg")
 
 class RtsAnalyzer(object):
     PRECISION = 4
+    ALPHA = 0.05
 
     def __init__(self, output, rts, quant_limit):
         self.output = output
@@ -63,15 +66,24 @@ class RtsAnalyzer(object):
 
     def calculate_threshold(self, ids, counts):
         ctrls = [id for id in ids if self.rts.is_control(id)]
-        counts = [max(1, counts[id]) for id in ctrls if id in counts]
-        #print(len(ctrls), ctrls)
-        #print(len(counts), counts)
+        counts = sorted([counts[id] for id in ctrls if id in counts if counts[id] > 0])
         if len(counts) <= 1:
             return 0.0
+
+        #print("PRE: {}".format(counts))
+        #mean = sp.gmean(counts)
+        #std = sp.gstd(counts)
+        #threshold = mean * (std**2)
+        #print(mean, std, threshold)
+
+        counts = grubbs.test(counts, alpha=self.ALPHA)
+
+        #print("POST: {}".format(list(counts)))
         mean = sp.gmean(counts)
         std = sp.gstd(counts)
-        #print(mean, std, mean * (std**2))
         threshold = mean * (std**2)
+        #print(mean, std, threshold)
+
         if self.quant_limit is not None and self.quant_limit > 0.0:
             return max(threshold, self.quant_limit)
         return threshold
