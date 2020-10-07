@@ -16,10 +16,11 @@ class RtsAnalyzer(object):
     PRECISION = 4
     ALPHA = 0.01
 
-    def __init__(self, output, rts, quant_limit):
+    def __init__(self, output, rts, quant_limit, protein):
         self.output = output
         self.rts = rts
         self.quant_limit = quant_limit
+        self.protein = protein
 
     @classmethod
     def sort(self, d1, d2):
@@ -64,7 +65,7 @@ class RtsAnalyzer(object):
         plt.savefig(output_file, bbox_inches="tight")
         #plt.show()
 
-    def calculate_threshold(self, ids, counts):
+    def calculate_rna_threshold(self, ids, counts):
         ctrls = [id for id in ids if self.rts.is_control(id)]
         counts = sorted([counts[id] for id in ctrls if id in counts if counts[id] > 0])
         if len(counts) <= 1:
@@ -83,7 +84,24 @@ class RtsAnalyzer(object):
         mean = sp.gmean(counts)
         std = sp.gstd(counts)
         threshold = mean * (std**2)
-        #print(mean, std, threshold)
+        print(mean, std, threshold)
+
+        return threshold
+
+    def calculate_protein_threshold(self, ids, counts):
+        ctrls = [id for id in ids if self.rts.is_control(id)]
+        counts = sorted([counts[id] for id in ctrls if id in counts if counts[id] > 0])
+        mean = sp.gmean(counts)
+        threshold = mean * 3
+        #print(counts)
+        #print(mean, threshold)
+        return threshold
+
+    def calculate_threshold(self, ids, counts):
+        if self.protein:
+            threshold = self.calculate_protein_threshold(ids, counts)
+        else:
+            threshold = self.calculate_rna_threshold(ids, counts)
 
         if self.quant_limit is not None and self.quant_limit > 0.0:
             return max(threshold, self.quant_limit)

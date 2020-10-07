@@ -49,11 +49,18 @@ def get_parser():
         help="Reference file for RTS sequence lookup",
     )
     parser.add_argument(
-        "-p",
+        "-c",
         "--control_prefix",
         required=False,
         default="ERCC_",
-        help="Reference file for RTS sequence lookup",
+        help="Prefix to use to identify controls in the RTS sequence lookup",
+    )
+    parser.add_argument(
+        "-p",
+        "--protein",
+        required=False,
+        action="store_true",
+        help="Flag to switch to Protein-mode for lookup-parsing and result analysis",
     )
     parser.add_argument(
         "-l",

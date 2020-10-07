@@ -8,11 +8,11 @@ from spatial_tools.analysis import RtsAnalyzer
 def main():
     parser = options.get_parser()
     args = options.parse_args(parser)
-    run(args.output_dir, args.rts_file, args.control_prefix, args.limit_of_quantitation, dragen_file=args.dragen_output, jbruand_file=args.jbruand_output, dnd1_file=args.dnd1_output, dnd2_file=args.dnd2_output)
+    run(args.output_dir, args.rts_file, args.control_prefix, args.limit_of_quantitation, args.protein, dragen_file=args.dragen_output, jbruand_file=args.jbruand_output, dnd1_file=args.dnd1_output, dnd2_file=args.dnd2_output)
 
-def run(output, rts_file, rts_prefix, quant_limit, dragen_file=None, jbruand_file=None, dnd1_file=None, dnd2_file=None):
+def run(output, rts_file, rts_prefix, quant_limit, protein, dragen_file=None, jbruand_file=None, dnd1_file=None, dnd2_file=None):
     rts_table = RtsTable.from_file(rts_file, rts_prefix)
-    analyzer = RtsAnalyzer(output, rts_table, quant_limit)
+    analyzer = RtsAnalyzer(output, rts_table, quant_limit, protein)
 
     print(dragen_file)
     if dragen_file is not None:

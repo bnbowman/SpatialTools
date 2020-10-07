@@ -39,6 +39,15 @@ class RtsTable(object):
                     sequences.append( rts_seq )
                     genes.append( gene )
                     secondary.append( second_id )
+                elif len(parts) == 6:
+                    _, gene, cls, rts_id, rts_seq, _ = parts
+                    rts_id = rts_id.replace('RNA', 'RTS00')
+                    primary.append( rts_id )
+                    sequences.append( rts_seq )
+                    if cls:
+                        genes.append( cls )
+                    else:
+                        genes.append( gene )
                 else:
                     raise Exception("ERROR: Invalid RTS file format - line has {} columns, but should have 2 or 5".format(len(parts)))
         return RtsTable(primary, sequences, genes, secondary, control_prefix)
